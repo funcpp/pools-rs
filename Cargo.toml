@@ -1,0 +1,19 @@
+[package]
+name = "pools-rs"
+version = "0.1.0"
+edition = "2021"
+build = "src/build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-cors = "0.7.0"
+actix-web = "4.9.0"
+async-graphql = {version = "7.0.11", features = ["chrono"]}
+async-graphql-actix-web = "7.0.11"
+base64 = "0.22.1"
+chrono = { version = "0.4.38", features = ["serde"] }
+diesel = { version = "2.2.0", features = ["postgres", "chrono", "r2d2"] }
+dotenvy = "0.15"
+futures = "0.3.30"
+r2d2 = "0.8.10"

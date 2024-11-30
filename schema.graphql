@@ -1,0 +1,69 @@
+
+type ChannelNode implements Node {
+	name: String!
+	createdAt: DateTime!
+	id: ID!
+	parent: ChannelNode
+	children: [ChannelNode!]!
+}
+
+type CommentNode implements Node {
+	postId: Int!
+	parentId: Int
+	authorId: String!
+	content: String!
+	createdAt: DateTime!
+	isDeleted: Boolean
+	deletedAt: DateTime
+	id: ID!
+	post: PostNode!
+	parent: CommentNode
+	children: [CommentNode!]!
+}
+
+"""
+Implement the DateTime<Utc> scalar
+
+The input/output is a string in RFC3339 format.
+"""
+scalar DateTime
+
+
+
+
+type Mutation {
+	createChannel(name: String!, parentId: ID): ChannelNode!
+	writePost(channelId: ID!, title: String!, content: String!): PostNode!
+	writeComment(postId: ID!, parentId: ID, content: String!): CommentNode!
+	deleteComment(id: ID!): CommentNode!
+}
+
+interface Node {
+	id: ID!
+}
+
+type PostNode implements Node {
+	postId: Int!
+	parentId: Int
+	content: String!
+	createdAt: DateTime!
+	isDeleted: Boolean
+	deletedAt: DateTime
+	id: ID!
+}
+
+type Query {
+	builtAt: DateTime!
+	node(id: ID!): Node!
+	nodes(ids: [ID!]!): [Node!]!
+	dummy: String!
+}
+
+
+directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @specifiedBy(url: String!) on SCALAR
+schema {
+	query: Query
+	mutation: Mutation
+}

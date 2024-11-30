@@ -19,6 +19,15 @@ async fn graphiql() -> Result<HttpResponse> {
         .body(GraphiQLSource::build().endpoint("/").finish()))
 }
 
+fn save_gql_schema(schema: &GQLSchema) {
+    use std::fs::File;
+    use std::io::Write;
+
+    let schema_str = schema.sdl();
+    let mut file = File::create("schema.graphql").unwrap();
+    file.write_all(schema_str.as_bytes()).unwrap();
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
@@ -26,6 +35,8 @@ async fn main() -> std::io::Result<()> {
             Schema::build(Query::default(), Mutation::default(), EmptySubscription)
                 .data(pg::establish_db_pool())
                 .finish();
+
+        save_gql_schema(&schema);
 
         App::new()
             .app_data(web::Data::new(schema.clone()))
